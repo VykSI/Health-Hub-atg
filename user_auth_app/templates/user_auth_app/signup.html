@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sign Up</title>
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Poppins&display=swap");
+      body {
+        font-family: "Poppins", sans-serif;
+        background-color: #f4f4f4;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .container {
+        margin-top: 50px;
+        margin-bottom: 50px;
+        background-color: #fff;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        padding: 20px;
+        width: 400px;
+      }
+
+      h2 {
+        text-align: center;
+        color: #333;
+      }
+
+      form {
+        display: flex;
+        flex-direction: column;
+      }
+
+      label {
+        margin-top: 10px;
+        margin-bottom: 5px;
+        font-weight: bold;
+        color: #333;
+      }
+
+      input,
+      select {
+        padding: 8px;
+        margin-bottom: 15px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        font-family: inherit;
+      }
+
+      button {
+        padding: 10px;
+        background-color: #007bff;
+        color: #fff;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+      }
+
+      button:hover {
+        background-color: #0056b3;
+      }
+
+      p {
+        color: red;
+        margin-top: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h2>Sign Up</h2>
+      <form method="post" action="/signup/" enctype="multipart/form-data">
+        {% csrf_token %}
+        <label for="usertype">User type:</label>
+        <select id="usertype" name="usertype">
+          <option value="patient">Patient</option>
+          <option value="doctor">Doctor</option>
+        </select>
+        <label for="first_name">First Name:</label>
+        <input type="text" id="first_name" name="firstname" required />
+
+        <label for="last_name">Last Name:</label>
+        <input type="text" id="last_name" name="lastname" required />
+
+        <label
+          for="specialization"
+          id="specializationLabel"
+          style="display: none"
+          >Specialization</label
+        >
+        <select id="specialization" name="specialization" style="display: none">
+          <option value="General Physician">General Physician</option>
+          <option value="Cardiologist">Cardiologist</option>
+          <option value="Dermatologist">Dermatologist</option>
+          <option value="Gynecologist">Gynecologist</option>
+          <option value="Neurologist">Neurologist</option>
+          <option value="Ophthalmologist">Ophthalmologist</option>
+          <option value="Orthopedist">Orthopedist</option>
+          <option value="Pediatrician">Pediatrician</option>
+          <option value="Psychiatrist">Psychiatrist</option>
+          <option value="Urologist">Urologist</option>
+        </select>
+
+        <label for="profile_picture">Profile Picture:</label>
+        <input type="file" id="profile_picture" name="profilepicture" />
+
+        <label for="username">Username:</label>
+        <input type="text" id="username" name="username" required />
+
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" required />
+
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password" required />
+
+        <label for="confirm_password">Confirm Password:</label>
+        <input
+          type="password"
+          id="confirm_password"
+          name="confirmpassword"
+          required
+          onkeyup="validate_password()"
+        />
+        <span id="wrong_pass_alert"></span>
+        <label for="address_line1">Address Line 1:</label>
+        <input type="text" id="address_line1" name="addressline1" required />
+
+        <label for="city">City:</label>
+        <input type="text" id="city" name="city" required />
+
+        <label for="state">State:</label>
+        <input type="text" id="state" name="state" required />
+
+        <label for="pincode">Pincode:</label>
+        <input type="text" id="pincode" name="pincode" required />
+
+        <br />
+        <button type="submit">Sign Up</button>
+        <p style="text-align: center">
+          Already a user? <a href="/login"> Login </a>
+        </p>
+        <p>{% if error %} {{ error }} {% endif %}</p>
+      </form>
+    </div>
+    <script>
+      function validate_password() {
+        var pass = document.getElementById("password").value;
+        var confirm_pass = document.getElementById("confirm_password").value;
+        if (pass != confirm_pass) {
+          document.getElementById("wrong_pass_alert").style.color = "red";
+          document.getElementById("wrong_pass_alert").innerHTML =
+            "Password mismatch";
+        } else {
+          document.getElementById("wrong_pass_alert").style.color = "green";
+          document.getElementById("wrong_pass_alert").innerHTML = "";
+        }
+      }
+
+      document
+        .getElementById("usertype")
+        .addEventListener("change", function () {
+          var usertype = document.getElementById("usertype").value;
+          var specializationLabel = document.getElementById(
+            "specializationLabel"
+          );
+          var specializationSelect = document.getElementById("specialization");
+
+          if (usertype == "doctor") {
+            specializationLabel.style.display = "block";
+            specializationSelect.style.display = "block";
+          } else {
+            specializationLabel.style.display = "none";
+            specializationSelect.style.display = "none";
+          }
+        });
+    </script>
+  </body>
+</html>

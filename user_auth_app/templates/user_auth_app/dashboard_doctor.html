@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Doctor Dashboard</title>
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Poppins&display=swap");
+      body {
+        margin: 0;
+        font-family: "Poppins", sans-serif;
+      }
+
+      .header {
+        background-color: #333;
+        color: white;
+        text-align: center;
+        padding: 1em;
+      }
+
+      .container {
+        max-width: 600px;
+        margin: 50px auto;
+        background-color: #fff;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+
+      .info {
+        flex-grow: 1;
+        margin-right: 20px;
+      }
+
+      p {
+        margin-bottom: 10px;
+      }
+
+      img {
+        max-width: 100%;
+        height: auto;
+        max-height: 160px;
+      }
+
+      .button-container {
+        margin-top: 20px;
+        display: flex;
+        width: 100%;
+      }
+
+      .button {
+        font-family: inherit;
+        padding: 10px;
+        background-color: #4caf50;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        margin-right: 10px;
+      }
+
+      #logout-btn {
+        margin-left: 1150px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="header">
+      <h2>Doctors Dashboard</h2>
+      <div class="button-container">
+        
+        <button
+          id="logout-btn"
+          class="button"
+          onclick="location.href='/login/'"
+        >
+          Log out
+        </button>
+      </div>
+    </div>
+
+    <p style="text-align: center; font-size: larger">Welcome Doctor!</p>
+    <div class="container">
+      <div class="info">
+        <p>Name: {{ user.first_name }} {{ user.last_name }}</p>
+        <p>Username: {{ user.username }}</p>
+        <p>Specialization: {{ user.specialization }}</p>
+        <p>Email id: {{ user.email }}</p>
+        <p>
+          Address: {{ user.address_line1 }} {{ user.city }} {{ user.state }}
+        </p>
+        <p>Pincode: {{ user.pincode }}</p>
+      </div>
+      {% if user.profile_picture %}
+      <img
+        src="{{ user.profile_picture.url }}"
+        alt="{{ user.username }}'s Profile Picture"
+      />
+      {% endif %}
+    </div>
+  </body>
+</html>
