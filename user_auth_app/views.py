@@ -3,7 +3,7 @@ import re
 from googleapiclient.discovery import build
 from django.http import HttpResponse, HttpResponseBadRequest
 from django.shortcuts import get_object_or_404, render, redirect
-from .models import UserProfile
+from .models import UserProfile, Blog
 from django.utils.datastructures import MultiValueDictKeyError
 from django.contrib.auth.hashers import make_password, check_password
 import os
@@ -102,3 +102,87 @@ def doctor_dashboard(request):
         return render(request, 'user_auth_app/dashboard_doctor.html', {'user': user})
     except UserProfile.DoesNotExist:
         return HttpResponse("User not found", status=404)
+
+def add_new_blog(request):
+    username = request.GET.get('username', None)
+
+    if username is None:
+        return HttpResponseBadRequest("Username parameter missing.")
+
+    if request.method == 'POST':
+        title = request.POST.get('title')
+        category = request.POST.get('category')
+        summary = request.POST.get('summary')
+        content = request.POST.get('content')
+        is_draft = 'save_as_draft' in request.POST
+        image_url = request.POST.get('image')
+
+        Blog.objects.create(
+            title=title,
+            category=category,
+            summary=summary,
+            content=content,
+            is_draft=is_draft,
+            author=username,
+            image_url=image_url,
+        )
+
+        if is_draft:
+            redirect_url = f'/doctor-dashboard/?username={username}'
+            return redirect(redirect_url)
+        else:
+            redirect_url = f'/doctor-dashboard/?username={username}'
+            return redirect(redirect_url)
+
+    return render(request, 'user_auth_app/addblog.html', {'username': username})
+
+def view_blog(request):
+    username = request.GET.get('username', None)
+    posted_blogs = Blog.objects.filter(is_draft=False, author=username)
+    draft_blogs = Blog.objects.filter(is_draft=True, author=username)
+    return render(request, 'user_auth_app/blogs.html', {'posted_blogs': posted_blogs, 'draft_blogs': draft_blogs, 'username': username})
+
+
+def patients_view_blog(request):
+    username = request.GET.get('username', None)
+    categories = Blog.objects.filter(is_draft=False).values_list(
+        'category', flat=True).distinct()
+
+    blog_categories = {}
+
+    for category in categories:
+        blogs_in_category = Blog.objects.filter(
+            category=category, is_draft=False)
+        blog_categories[category] = blogs_in_category
+
+    return render(request, 'user_auth_app/patient_blogs.html', {'blog_categories': blog_categories, 'username': username})
+
+
+def blog_details_1(request, id):
+    blog = get_object_or_404(Blog, id=id)
+    return render(request, 'user_auth_app/blog_details_1.html', {'blog': blog})
+
+
+def blog_details_2(request, id):
+    blog = get_object_or_404(Blog, id=id)
+    return render(request, 'user_auth_app/blog_details_2.html', {'blog': blog})
+
+
+def update_blog_draft_status(request, blog_id):
+    blog = get_object_or_404(Blog, pk=blog_id)
+
+    blog.is_draft = False
+    blog.save()
+
+    redirect_url = f'/doctor-dashboard/?username={blog.author}'
+    return redirect(redirect_url)
+
+
+def delete_blog(request, blog_id):
+    blog = get_object_or_404(Blog, pk=blog_id)
+    author = blog.author
+    if request.method == "POST":
+        blog.delete()
+
+    redirect_url = f'/doctor-dashboard/?username={author}'
+    return redirect(redirect_url)
