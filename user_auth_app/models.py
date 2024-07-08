@@ -45,3 +45,15 @@ class Blog(models.Model):
 
     def __str__(self):
         return self.title
+
+
+class Appointments(models.Model):
+    doctor = models.CharField(max_length=100)
+    specialization = models.CharField(max_length=50)
+    patient = models.CharField(max_length=100)
+    date = models.DateField()
+    start_time = models.TimeField()
+    end_time = models.TimeField()
+
+    def __str__(self):
+        return self.doctor + ' - ' + self.patient

@@ -78,6 +78,18 @@
           View Blogs
         </button>
         <button
+          class="button"
+          onclick="location.href='/patient-dashboard/book-appointment/?username={{user.username}}'"
+        >
+          Book Appointment
+        </button>
+        <button
+          class="button"
+          onclick="location.href='/patient-dashboard/appointment-list/?username={{user.username}}'"
+        >
+          View Appointments
+        </button>
+        <button
           id="logout-btn"
           class="button"
           onclick="location.href='/login/'"
